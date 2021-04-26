@@ -1,16 +1,17 @@
-var gulp = require('gulp');
-var useref = require('gulp-useref');
-var connect = require('gulp-connect');
-var sass = require('gulp-sass');
-var fileinclude = require('gulp-file-include');
-var gulpif = require('gulp-if');
-var babel = require('gulp-babel');
-var uglify = require('gulp-uglify');
-var minifyCss = require('gulp-clean-css');
-var browserSync = require('browser-sync').create();
-var htmlhint = require("gulp-htmlhint");
+const gulp = require('gulp');
+const useref = require('gulp-useref');
+const connect = require('gulp-connect');
+const sass = require('gulp-sass');
+const fileinclude = require('gulp-file-include');
+const gulpif = require('gulp-if');
+const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
+const minifyCss = require('gulp-clean-css');
+const htmlhint = require("gulp-htmlhint");
 const image = require('gulp-image');
+const eslint = require('gulp-eslint');
 
+const browserSync = require('browser-sync').create();
 gulp.sources = {
     src: './src',
     dist: './dist'
@@ -117,6 +118,14 @@ gulp.task('htmlhint', gulp.series('file_include', function () {
         .pipe(htmlhint.failReporter())
         .pipe(connect.reload());
 }));
+
+// Default format eslint
+gulp.task('default', () => {
+    return src([gulp.sources.src + 'assets/js/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
 
 // Start development server
 gulp.task('run:dev', gulp.parallel([
